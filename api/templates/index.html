@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>OpenAI API Usage</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>OpenAI API Usage</h1>
+    <canvas id="usageChart"></canvas>
+    <script>
+        var ctx = document.getElementById('usageChart').getContext('2d');
+        var datasets = {{ datasets|safe }};
+        datasets.forEach(function(dataset, index) {
+            // Assign a unique color to each dataset
+            var color = 'hsl(' + (index * 360 / datasets.length) + ', 100%, 75%)';
+            dataset.backgroundColor = color;
+            dataset.borderColor = color;
+        });
+        var usageChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: {{ timestamps|safe }},
+                datasets: datasets
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        stacked: true  // Stack bars on top of each other
+                    },
+                    x: {
+                        stacked: true  // Stack bars on top of each other
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
