@@ -6,17 +6,39 @@
 </head>
 <body>
     <h1>OpenAI API Usage</h1>
+    <label for="granularity">Select time granularity:</label>
+    <select id="granularity" onchange="window.location = '?granularity=' + this.value;">
+        <option value="5" {{ 'selected' if granularity == '5' }}>5 minutes</option>
+        <option value="30" {{ 'selected' if granularity == '30' }}>30 minutes</option>
+        <option value="60" {{ 'selected' if granularity == '60' }}>1 hour</option>
+    </select>
+    <button id="toggleView" style="float: right;">Switch to Pie Chart</button>
     <canvas id="usageChart"></canvas>
     <script>
         var ctx = document.getElementById('usageChart').getContext('2d');
         var datasets = {{ datasets|safe }};
+        var barChart = true;  // Flag to track current chart type
+
         datasets.forEach(function(dataset, index) {
             // Assign a unique color to each dataset
             var color = 'hsl(' + (index * 360 / datasets.length) + ', 100%, 75%)';
             dataset.backgroundColor = color;
             dataset.borderColor = color;
         });
-        var usageChart = new Chart(ctx, {
+
+        // Prepare data for the pie chart
+        var pieData = datasets.filter(function(dataset) {
+            return dataset.label.endsWith(' (total)');
+        }).map(function(dataset) {
+            return {
+                label: dataset.label,
+                data: [dataset.data.reduce(function(a, b) { return a + b; }, 0)],
+                backgroundColor: dataset.backgroundColor,
+                borderColor: dataset.borderColor
+            };
+        });
+
+        var chart = new Chart(ctx, {
             type: 'bar',
             data: {
                 labels: {{ timestamps|safe }},
@@ -25,14 +47,45 @@
             options: {
                 scales: {
                     y: {
-                        beginAtZero: true,
-                        stacked: true  // Stack bars on top of each other
+                        beginAtZero: true
                     },
                     x: {
-                        stacked: true  // Stack bars on top of each other
                     }
                 }
             }
+        });
+
+        document.getElementById('toggleView').addEventListener('click', function() {
+            chart.destroy();  // Destroy the current chart
+            if (barChart) {
+                chart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: pieData.map(function(dataset) { return dataset.label; }),
+                        datasets: pieData
+                    }
+                });
+                this.textContent = 'Switch to Bar Chart';
+            } else {
+                chart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: {{ timestamps|safe }},
+                        datasets: datasets
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            },
+                            x: {
+                            }
+                        }
+                    }
+                });
+                this.textContent = 'Switch to Pie Chart';
+            }
+            barChart = !barChart;  // Toggle chart type flag
         });
     </script>
 </body>
