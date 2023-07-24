@@ -47,13 +47,22 @@
             options: {
                 scales: {
                     y: {
-                        beginAtZero: true
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Cost ($)'
+                        }
                     },
                     x: {
+                        title: {
+                            display: true,
+                            text: 'Time'
+                        }
                     }
                 }
             }
         });
+
 
         document.getElementById('toggleView').addEventListener('click', function() {
             chart.destroy();  // Destroy the current chart
