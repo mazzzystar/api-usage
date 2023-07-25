@@ -9,7 +9,7 @@ from collections import defaultdict
 
 app = Flask(__name__)
 
-api_key = os.environ['API_KEY']
+api_key = os.environ.get('OPENAI_API_KEY')
 headers = {'Authorization': f'Bearer {api_key}'}
 url = 'https://api.openai.com/v1/usage'
 
@@ -67,7 +67,7 @@ def index():
     usage_data, whisper_data = get_usage(date)
     if usage_data is None or whisper_data is None:
         # Handle the error (e.g., by showing an error message to the user and returning early)
-        return render_template('error.html'), 500
+        return render_template('error.html')
 
     # Group usage data by timestamp and model
     usage_by_timestamp = defaultdict(lambda: defaultdict(lambda: defaultdict(float)))
