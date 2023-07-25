@@ -1,5 +1,5 @@
 # apiusage
-Calculate your OpenAI API usage with [apiusage.info](https://apiusage.info/)
+Track your OpenAI API usage with [apiusage.info](https://apiusage.info/) to effortlessly view the costs consumed by different models.
 
 ![my-usage](static/usage.jpg)
 ![my-usage](static/usage-pie.jpg)
