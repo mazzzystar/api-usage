@@ -10,7 +10,7 @@ Enter your OpenAI API Key to view the costs consumed by various model APIs over 
 # Security
 The code is open-source and will not store your privacy.
 
-# Deploy by Yourself
+# Run Yourself
 Clone this project, run below in command line:
 ```bash
 export OPENAI_API_KEY="YOUR_API_KEY"
