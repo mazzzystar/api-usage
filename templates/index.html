@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>OpenAI API Usage</title>
+    <title>OpenAI API Usage & Cost</title>
+    <link rel="icon" href="static/favicon.png" type="image/x-icon">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
     <style>
@@ -14,6 +15,26 @@
             font-size: 2.5em;
             text-align: center;
         }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 5px 0;
+        }
+        .error-text {
+            color: red;
+        }
+        #api-key-form {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        #api-key-form input {
+            padding: 5px;
+            font-size: 16px;
+        }
+
         .control-panel {
             display: flex;
             justify-content: space-around;
@@ -123,6 +144,17 @@
     </style>
 </head>
 <body>
+    <div class="header">
+        <form id="api-key-form" method="post">
+            <label for="apiKey">Enter your API key:</label>
+            <input type="text" id="apiKey" name="apiKey">
+            <input type="submit" class="styled-button" value="Submit">
+            <span id="error-text" class="error-text"></span>
+        </form>
+
+    </div>
+
+
     <div class="toggle-wrapper">
         <div class="toggle-button">
             <label class="switch">
@@ -135,7 +167,11 @@
         </div>
     </div>
 
-    <h1>OpenAI API Usage Cost ({{ date }}: ${{ '%.2f'|format(total_cost) }})</h1>
+    <h1 id="api-title">
+        <a id="title-link" style="color: #3DE08A; text-decoration: underline;" href="https://twitter.com/immazzystar">Ke's</a>
+        OpenAI Cost (${{ '%.2f'|format(total_cost) }})
+    </h1>
+
     <div id="granularityDiv">
         <label for="granularity">Select time granularity:</label>
         <select id="granularity" onchange="window.location.search = '?granularity=' + this.value + '&date={{ date }}';">
@@ -152,7 +188,7 @@
     </div>
 
 
-    <div style="height:85vh; width:100%; max-width: 85vw; margin: auto;">
+    <div style="height:80vh; width:100%; max-width: 80vw; margin: auto;">
         <canvas id="usageChart"></canvas>
     </div>
 
@@ -287,6 +323,48 @@
             }
         });
     </script>
+
+    <script>
+        window.onload = function() {
+            var isValidKey = localStorage.getItem('validKey');
+            if(isValidKey === 'true') {
+                titleLink.style.display = 'none'; // Hide the link
+                apiTitle.innerHTML = apiTitle.innerHTML.replace("Ke's", 'My');  // Replace 'Ke's' with 'My' in the existing title
+            }
+        };
+
+        var apiKeyForm = document.getElementById('api-key-form');
+        var apiKeyField = document.getElementById('apiKey');
+        var errorText = document.getElementById('error-text');
+        var apiTitle = document.getElementById('api-title');
+        var titleLink = document.getElementById('title-link');
+
+        apiKeyForm.addEventListener('submit', function(event) {
+            event.preventDefault();  // Prevent the form from submitting normally
+
+            var apiKey = apiKeyField.value;
+
+            // Check if the key is 51 characters and starts with "sk-"
+            if (apiKey.length === 51 && apiKey.startsWith('sk-')) {
+                errorText.textContent = '';  // Clear error message
+                localStorage.setItem('validKey', 'true');
+
+                // Change the title and remove the link when a valid API key is provided
+                titleLink.style.display = 'none'; // Hide the link
+                apiTitle.innerHTML = apiTitle.innerHTML.replace("Ke's", 'My');  // Replace 'Ke's' with 'My' in the existing title
+
+                // Submit the form manually
+                apiKeyForm.submit();
+            } else {
+                errorText.textContent = 'Invalid API key. Please enter a valid key.';  // Set error message
+                localStorage.setItem('validKey', 'false');
+            }
+        });
+
+
+    </script>
+
+
 
 </body>
 </html>

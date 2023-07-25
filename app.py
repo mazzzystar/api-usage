@@ -28,17 +28,27 @@ model_costs = {
 }
 
 
-def get_usage(date):
+def get_usage(api_key, date, use_own_key=False):
+    headers = {'Authorization': f'Bearer {api_key}'}
     params = {'date': date}
+
+    if use_own_key:
+        try:
+            response = requests.get(url, headers=headers, params=params)
+            response.raise_for_status()  # Raises a HTTPError if the response was unsuccessful
+            response = response.json()
+        except requests.RequestException as e:
+            print(f"Request to OpenAI API failed: {e}")
+            return None, None
+    else:
+        """
+        To avoid "Request to OpenAI API failed: 429 Client Error: Too Many Requests for url: https://api.openai.com/v1/usage"
+        """
+        with open('static/data.json', 'r') as f:
+            response = json.load(f)
     try:
-        response = requests.get(url, headers=headers, params=params)
-        response.raise_for_status()  # Raises a HTTPError if the response was unsuccessful
-    except requests.RequestException as e:
-        print(f"Request to OpenAI API failed: {e}")
-        return None, None
-    try:
-        usage_data = response.json()['data']
-        whisper_data = response.json()['whisper_api_data']
+        usage_data = response['data']
+        whisper_data = response['whisper_api_data']
     except KeyError as e:
         print(f"Error processing OpenAI API response: {e}")
         return None, None
@@ -55,16 +65,34 @@ def to_utc(date):
     return utc_dt.strftime('%Y-%m-%d')
 
 
-@app.route('/', methods=['GET'])
+@app.route('/', methods=['GET', 'POST'])
 def index():
+    use_own_key = True
+    default_date = '2023-07-24'
+    date = request.args.get('date')
+
+    # Check if this is a POST request
+    if request.method == 'POST':
+        # Get the API key from the form data
+        api_key = request.form.get('api_key')
+
+        if not api_key:
+            # If the API key field was empty, use the default key
+            api_key = os.environ.get('OPENAI_API_KEY')
+            use_own_key = False
+            date = default_date
+    else:
+        api_key = os.environ.get('OPENAI_API_KEY')  # Default API key for GET requests
+        use_own_key = False
+        date = default_date
+
     granularity = request.args.get('granularity', '60')  # Get granularity from query parameters, default is '60'
-    date = request.args.get('date')  # Get date from query parameters
 
     if date is None:
         date = (datetime.date.today() - datetime.timedelta(days=1)).strftime('%Y-%m-%d')
 
     date = to_utc(date)
-    usage_data, whisper_data = get_usage(date)
+    usage_data, whisper_data = get_usage(api_key, date, use_own_key)
     if usage_data is None or whisper_data is None:
         # Handle the error (e.g., by showing an error message to the user and returning early)
         return render_template('error.html')
@@ -130,6 +158,7 @@ def index():
     return render_template('index.html', timestamps=json.dumps(timestamps), datasets=json.dumps(datasets),
                            model_total_costs=json.dumps(dict(model_total_costs)), granularity=granularity, date=date,
                            total_cost=total_cost)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
