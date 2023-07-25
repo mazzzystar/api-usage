@@ -1,13 +1,14 @@
 import os
 from pytz import timezone, utc
 import pytz
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, session
 import requests
 import datetime
 import json
 from collections import defaultdict
 
 app = Flask(__name__)
+app.secret_key = os.urandom(24)
 
 api_key = os.environ.get('OPENAI_API_KEY')
 headers = {'Authorization': f'Bearer {api_key}'}
@@ -72,19 +73,19 @@ def index():
 
     # Check if this is a POST request
     if request.method == 'POST':
-        # Get the API key from the form data
         api_key = request.form.get('api_key')
-
-        if not api_key:
-            # If the API key field was empty, use the default key
+        if api_key:
+            # Save the key in the session
+            session['api_key'] = api_key
+            use_own_key = True
+        else:
             api_key = os.environ.get('OPENAI_API_KEY')
             use_own_key = False
             date = default_date
-        else:
-            use_own_key = True
     else:
-        api_key = os.environ.get('OPENAI_API_KEY')  # Default API key for GET requests
-        use_own_key = False
+        # Check for the API key in the session
+        api_key = session.get('api_key', os.environ.get('OPENAI_API_KEY'))  # Default API key for GET requests
+        use_own_key = 'api_key' in session
         date = default_date
 
     granularity = request.args.get('granularity', '60')  # Get granularity from query parameters, default is '60'

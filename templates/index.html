@@ -376,6 +376,12 @@
                 // Fetch the stored API key
                 var apiKey = localStorage.getItem('apiKey');
 
+                // Set the value of the API key input field
+                document.getElementById('apiKey').value = apiKey;
+
+                // Set the value of the hidden input field
+                document.getElementById('hidden-api-key').value = apiKey;
+
                 // Send a request to your server with the stored API key
                 fetch('/', {
                     method: 'POST',
