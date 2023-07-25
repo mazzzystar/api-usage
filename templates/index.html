@@ -163,6 +163,7 @@
         <form id="api-key-form" method="post" style="flex-grow: 1;">
             <label for="apiKey">Enter your API key:</label>
             <input type="text" id="apiKey" name="apiKey">
+            <input type="hidden" id="hidden-api-key" name="api_key">
             <input type="submit" class="styled-button" value=" Set ">
             <span id="error-text" class="error-text"></span>
         </form>
@@ -352,6 +353,12 @@
             if (apiKey.length === 51 && apiKey.startsWith('sk-')) {
                 errorText.textContent = '';  // Clear error message
                 localStorage.setItem('validKey', 'true'); // Store validKey flag in localStorage
+
+                // Store the apiKey in localStorage
+                localStorage.setItem('apiKey', apiKey);
+
+                // Set the value of the hidden input field
+                document.getElementById('hidden-api-key').value = apiKey;
 
                 // Submit the form manually
                 apiKeyForm.submit();

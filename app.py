@@ -67,7 +67,6 @@ def to_utc(date):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    use_own_key = True
     default_date = '2023-07-24'
     date = request.args.get('date')
 
@@ -81,6 +80,8 @@ def index():
             api_key = os.environ.get('OPENAI_API_KEY')
             use_own_key = False
             date = default_date
+        else:
+            use_own_key = True
     else:
         api_key = os.environ.get('OPENAI_API_KEY')  # Default API key for GET requests
         use_own_key = False
