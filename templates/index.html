@@ -372,8 +372,21 @@
         window.onload = function() {
             if (localStorage.getItem('validKey') === 'true') {
                 document.getElementById('api-title').innerHTML = "My OpenAI Cost (${{ '%.2f'|format(total_cost) }})";
+
+                // Fetch the stored API key
+                var apiKey = localStorage.getItem('apiKey');
+
+                // Send a request to your server with the stored API key
+                fetch('/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ api_key: apiKey })
+                });
             }
         }
+
     </script>
 
 
