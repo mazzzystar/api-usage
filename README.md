@@ -12,7 +12,7 @@ The code is open-source and will not store your privacy.
 
 # Deploy by Yourself
 Clone this project, run below in command line:
-```
+```bash
 export OPENAI_API_KEY="YOUR_API_KEY"
 python app.py
 ```
