@@ -3,15 +3,23 @@
 <head>
     <title>OpenAI API Usage</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background-color: white;
+            color: black;
+        }
+    </style>
 </head>
 <body>
     <h1>OpenAI API Usage</h1>
     <label for="granularity">Select time granularity:</label>
-    <select id="granularity" onchange="window.location = '?granularity=' + this.value;">
+    <select id="granularity" onchange="window.location.search = '?granularity=' + this.value + '&date={{ date }}';">
         <option value="5" {{ 'selected' if granularity == '5' }}>5 minutes</option>
         <option value="30" {{ 'selected' if granularity == '30' }}>30 minutes</option>
         <option value="60" {{ 'selected' if granularity == '60' }}>1 hour</option>
     </select>
+    <button onclick="window.location.search = '?granularity={{ granularity }}&date=' + (new Date(new Date('{{ date }}').getTime() - 24 * 60 * 60 * 1000).toISOString().split('T')[0]);">Previous Day</button>
+    <button onclick="window.location.search = '?granularity={{ granularity }}&date=' + (new Date(new Date('{{ date }}').getTime() + 24 * 60 * 60 * 1000).toISOString().split('T')[0]);">Next Day</button>
     <button id="toggleView" style="float: right;">Switch to Pie Chart</button>
     <canvas id="usageChart"></canvas>
     <script>
@@ -19,12 +27,14 @@
         var datasets = {{ datasets|safe }};
         var barChart = true;  // Flag to track current chart type
 
+        var colorPalette = ['#3DE08A', '#000000', '#808080', '#A9A9A9', '#C0C0C0'];
         datasets.forEach(function(dataset, index) {
-            // Assign a unique color to each dataset
-            var color = 'hsl(' + (index * 360 / datasets.length) + ', 100%, 75%)';
+            // Assign a color from the palette to each dataset
+            var color = colorPalette[index % colorPalette.length];
             dataset.backgroundColor = color;
             dataset.borderColor = color;
         });
+
 
         // Prepare data for the pie chart
         var pieData = datasets.filter(function(dataset) {

@@ -1,4 +1,6 @@
 import os
+from pytz import timezone, utc
+import pytz
 from flask import Flask, render_template, request
 import requests
 import datetime
@@ -18,10 +20,24 @@ def get_usage(date):
     return usage_data
 
 
+# Convert date to UTC
+def to_utc(date):
+    local = timezone('America/Los_Angeles')  # Replace with your timezone
+    naive = datetime.datetime.strptime(date, '%Y-%m-%d')
+    local_dt = local.localize(naive, is_dst=None)
+    utc_dt = local_dt.astimezone(utc)
+    return utc_dt.strftime('%Y-%m-%d')
+
+
 @app.route('/', methods=['GET'])
 def index():
-    granularity = request.args.get('granularity', '60')  # Get granularity from query parameters, default is '5'
-    date = (datetime.date.today() - datetime.timedelta(days=1)).strftime('%Y-%m-%d')
+    granularity = request.args.get('granularity', '60')  # Get granularity from query parameters, default is '60'
+    date = request.args.get('date')  # Get date from query parameters
+
+    if date is None:
+        date = (datetime.date.today() - datetime.timedelta(days=1)).strftime('%Y-%m-%d')
+
+    date = to_utc(date)
     usage_data = get_usage(date)
 
     # Group usage data by timestamp and model
@@ -29,7 +45,7 @@ def index():
     for data in usage_data:
         timestamp = datetime.datetime.fromtimestamp(data['aggregation_timestamp'])
         timestamp = (timestamp - datetime.timedelta(minutes=timestamp.minute % int(granularity),
-                                                    seconds=timestamp.second)).strftime('%m%d %H:%M')
+                                                    seconds=timestamp.second)).strftime('%m-%d %H:%M')
         model = data['snapshot_id']
         context_tokens = data['n_context_tokens_total']
         generated_tokens = data['n_generated_tokens_total']
@@ -62,7 +78,7 @@ def index():
             total_costs = [context_costs[i] + generated_costs[i] for i in range(len(context_costs))]
             datasets.append({'label': f'{model} (total)', 'data': total_costs, 'stack': 'Stack 0'})
 
-    return render_template('index.html', timestamps=json.dumps(timestamps), datasets=json.dumps(datasets), granularity=granularity)
+    return render_template('index.html', timestamps=json.dumps(timestamps), datasets=json.dumps(datasets), granularity=granularity, date=date)
 
 
 if __name__ == '__main__':
