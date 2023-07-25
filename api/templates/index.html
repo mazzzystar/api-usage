@@ -3,6 +3,7 @@
 <head>
     <title>OpenAI API Usage</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
     <style>
         body {
             background-color: white;
@@ -11,17 +12,22 @@
     </style>
 </head>
 <body>
-    <h1>OpenAI API Usage</h1>
-    <label for="granularity">Select time granularity:</label>
-    <select id="granularity" onchange="window.location.search = '?granularity=' + this.value + '&date={{ date }}';">
-        <option value="5" {{ 'selected' if granularity == '5' }}>5 minutes</option>
-        <option value="30" {{ 'selected' if granularity == '30' }}>30 minutes</option>
-        <option value="60" {{ 'selected' if granularity == '60' }}>1 hour</option>
-    </select>
+    <h1>OpenAI API Usage and Cost ({{ date }}: ${{ '%.2f'|format(total_cost) }})</h1>
+
+    <div id="granularityDiv">
+        <label for="granularity">Select time granularity:</label>
+        <select id="granularity" onchange="window.location.search = '?granularity=' + this.value + '&date={{ date }}';">
+            <option value="5" {{ 'selected' if granularity == '5' }}>5 minutes</option>
+            <option value="30" {{ 'selected' if granularity == '30' }}>30 minutes</option>
+            <option value="60" {{ 'selected' if granularity == '60' }}>1 hour</option>
+        </select>
+    </div>
     <button onclick="window.location.search = '?granularity={{ granularity }}&date=' + (new Date(new Date('{{ date }}').getTime() - 24 * 60 * 60 * 1000).toISOString().split('T')[0]);">Previous Day</button>
     <button onclick="window.location.search = '?granularity={{ granularity }}&date=' + (new Date(new Date('{{ date }}').getTime() + 24 * 60 * 60 * 1000).toISOString().split('T')[0]);">Next Day</button>
     <button id="toggleView" style="float: right;">Switch to Pie Chart</button>
-    <canvas id="usageChart"></canvas>
+    <div style="height:80vh;">
+        <canvas id="usageChart"></canvas>
+    </div>
     <script>
         var ctx = document.getElementById('usageChart').getContext('2d');
         var datasets = {{ datasets|safe }};
@@ -29,24 +35,35 @@
 
         var colorPalette = ['#3DE08A', '#000000', '#808080', '#A9A9A9', '#C0C0C0'];
         datasets.forEach(function(dataset, index) {
-            // Assign a color from the palette to each dataset
-            var color = colorPalette[index % colorPalette.length];
+            var color;
+            // Check if the model is 'whisper-1'
+            if (dataset.label.startsWith('whisper-1')) {
+                color = '#FAFB76';
+            } else {
+                // Assign a color from the palette to each dataset
+                color = colorPalette[index % colorPalette.length];
+            }
             dataset.backgroundColor = color;
             dataset.borderColor = color;
         });
 
+        // Prepare data for the pie chart
+        var totalCost = datasets.reduce(function(acc, dataset) {
+            return acc + dataset.data.reduce(function(a, b) { return a + b; }, 0);
+        }, 0);
+
+        var modelTotalCosts = JSON.parse('{{ model_total_costs|safe }}');
 
         // Prepare data for the pie chart
-        var pieData = datasets.filter(function(dataset) {
-            return dataset.label.endsWith(' (total)');
-        }).map(function(dataset) {
-            return {
-                label: dataset.label,
-                data: [dataset.data.reduce(function(a, b) { return a + b; }, 0)],
-                backgroundColor: dataset.backgroundColor,
-                borderColor: dataset.borderColor
-            };
-        });
+        var pieData = {
+            labels: Object.keys(modelTotalCosts),
+            datasets: [{
+                data: Object.values(modelTotalCosts),
+                backgroundColor: colorPalette
+            }]
+        };
+
+        var timezone = new Intl.DateTimeFormat().resolvedOptions().timeZone;
 
         var chart = new Chart(ctx, {
             type: 'bar',
@@ -66,25 +83,50 @@
                     x: {
                         title: {
                             display: true,
-                            text: 'Time'
+                            text: 'Time (' + timezone + ')'
                         }
                     }
                 }
             }
         });
 
-
         document.getElementById('toggleView').addEventListener('click', function() {
             chart.destroy();  // Destroy the current chart
+            var granularityDiv = document.getElementById('granularityDiv');  // Change 'granularityDiv' to your actual element ID
+
             if (barChart) {
                 chart = new Chart(ctx, {
                     type: 'pie',
-                    data: {
-                        labels: pieData.map(function(dataset) { return dataset.label; }),
-                        datasets: pieData
+                    data: pieData,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltips: {
+                            enabled: false
+                        },
+                        plugins: {
+                            datalabels: {
+                                formatter: (value, ctx) => {
+                                    let sum = 0;
+                                    let dataArr = ctx.chart.data.datasets[0].data;
+                                    dataArr.map(data => { sum += data });
+                                    let percentage = (value*100 / sum).toFixed(2)+"%";
+                                    return percentage;
+                                },
+                                color: '#fff',
+                            }
+                        },
+                        animation: {
+                            animateScale: true,
+                            animateRotate: true
+                        }
                     }
                 });
                 this.textContent = 'Switch to Bar Chart';
+                granularityDiv.style.display = 'none';  // Hide granularity selection
             } else {
                 chart = new Chart(ctx, {
                     type: 'bar',
@@ -103,9 +145,11 @@
                     }
                 });
                 this.textContent = 'Switch to Pie Chart';
+                granularityDiv.style.display = 'block';
             }
             barChart = !barChart;  // Toggle chart type flag
         });
     </script>
+
 </body>
 </html>
