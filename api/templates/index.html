@@ -8,12 +8,134 @@
         body {
             background-color: white;
             color: black;
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            font-size: 2.5em;
+            text-align: center;
+        }
+        .control-panel {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px; /* add space between the buttons */
+        }
+        .styled-button {
+            background: black;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 16px;
+            transition: all 0.3s ease 0s;
+            margin: 5px;
+        }
+        .styled-button:hover {
+            background: #333;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 5px;
+        }
+        #granularityDiv {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 10px;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .toggle-wrapper {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .toggle-button {
+            order: 2;
+        }
+
+        .toggle-text {
+            order: 1;
+            padding-right: 10px;
+        }
+
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+        }
+
+        input:checked + .slider {
+            background-color: #000;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
         }
     </style>
 </head>
 <body>
-    <h1>OpenAI API Usage and Cost ({{ date }}: ${{ '%.2f'|format(total_cost) }})</h1>
+    <div class="toggle-wrapper">
+        <div class="toggle-button">
+            <label class="switch">
+                <input type="checkbox" id="toggleView">
+                <span class="slider round"></span>
+            </label>
+        </div>
+        <div class="toggle-text">
+            <p>Switch to Pie Chart</p>
+        </div>
+    </div>
 
+    <h1>OpenAI API Usage Cost ({{ date }}: ${{ '%.2f'|format(total_cost) }})</h1>
     <div id="granularityDiv">
         <label for="granularity">Select time granularity:</label>
         <select id="granularity" onchange="window.location.search = '?granularity=' + this.value + '&date={{ date }}';">
@@ -22,12 +144,18 @@
             <option value="60" {{ 'selected' if granularity == '60' }}>1 hour</option>
         </select>
     </div>
-    <button onclick="window.location.search = '?granularity={{ granularity }}&date=' + (new Date(new Date('{{ date }}').getTime() - 24 * 60 * 60 * 1000).toISOString().split('T')[0]);">Previous Day</button>
-    <button onclick="window.location.search = '?granularity={{ granularity }}&date=' + (new Date(new Date('{{ date }}').getTime() + 24 * 60 * 60 * 1000).toISOString().split('T')[0]);">Next Day</button>
-    <button id="toggleView" style="float: right;">Switch to Pie Chart</button>
-    <div style="height:80vh;">
+    <div class="button-container">
+        <div class="button-group">
+            <button class="styled-button" onclick="window.location.search = '?granularity={{ granularity }}&date=' + (new Date(new Date('{{ date }}').getTime() - 24 * 60 * 60 * 1000).toISOString().split('T')[0]);">Previous Day</button>
+            <button class="styled-button" onclick="window.location.search = '?granularity={{ granularity }}&date=' + (new Date(new Date('{{ date }}').getTime() + 24 * 60 * 60 * 1000).toISOString().split('T')[0]);">Next Day</button>
+        </div>
+    </div>
+
+
+    <div style="height:85vh; width:100%; max-width: 85vw; margin: auto;">
         <canvas id="usageChart"></canvas>
     </div>
+
     <script>
         var ctx = document.getElementById('usageChart').getContext('2d');
         var datasets = {{ datasets|safe }};
@@ -90,11 +218,14 @@
             }
         });
 
-        document.getElementById('toggleView').addEventListener('click', function() {
+        var toggleButton = document.getElementById('toggleView');
+        toggleButton.addEventListener('change', function() {
             chart.destroy();  // Destroy the current chart
-            var granularityDiv = document.getElementById('granularityDiv');  // Change 'granularityDiv' to your actual element ID
 
-            if (barChart) {
+            var granularityDiv = document.getElementById('granularityDiv');  // Get the granularityDiv element
+
+            if (this.checked) {
+                // Pie chart configuration
                 chart = new Chart(ctx, {
                     type: 'pie',
                     data: pieData,
@@ -125,9 +256,9 @@
                         }
                     }
                 });
-                this.textContent = 'Switch to Bar Chart';
-                granularityDiv.style.display = 'none';  // Hide granularity selection
+                granularityDiv.style.display = 'none';  // Hide granularityDiv
             } else {
+                // Bar chart configuration
                 chart = new Chart(ctx, {
                     type: 'bar',
                     data: {
@@ -137,17 +268,23 @@
                     options: {
                         scales: {
                             y: {
-                                beginAtZero: true
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Cost ($)'
+                                }
                             },
                             x: {
+                                title: {
+                                    display: true,
+                                    text: 'Time (' + timezone + ')'
+                                }
                             }
                         }
                     }
                 });
-                this.textContent = 'Switch to Pie Chart';
-                granularityDiv.style.display = 'block';
+                granularityDiv.style.display = 'block';  // Show granularityDiv
             }
-            barChart = !barChart;  // Toggle chart type flag
         });
     </script>
 
