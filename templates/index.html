@@ -6,7 +6,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
-    <script defer src="/_vercel/insights/script.js"></script>
     <meta name="description" content="Open-sourced website tool designed to track and analyze your daily usage and cost of the OpenAI API. You can view the API costs for different models, the consumption segmented by time, as well as pie chart proportions. All you need to do is input your API Key. It's safe and will not disclose your privacy.">
 
     <!-- Google tag (gtag.js) -->
@@ -231,8 +230,8 @@
     </div>
     <div class="button-container">
         <div class="button-group">
-            <button class="styled-button" onclick="window.location.search = '?granularity={{ granularity }}&date=' + (new Date(new Date('{{ date }}').getTime() - 24 * 60 * 60 * 1000).toISOString().split('T')[0]);">Previous Day</button>
-            <button class="styled-button" onclick="window.location.search = '?granularity={{ granularity }}&date=' + (new Date(new Date('{{ date }}').getTime() + 24 * 60 * 60 * 1000).toISOString().split('T')[0]);">Next Day</button>
+            <button class="styled-button" onclick="navigateToDay(-1)">Previous Day</button>
+            <button class="styled-button" onclick="navigateToDay(1)">Next Day</button>
         </div>
     </div>
 
@@ -425,6 +424,12 @@
                     body: JSON.stringify({ api_key: apiKey })
                 });
             }
+        }
+
+        function navigateToDay(delta) {
+            const date = new Date(new Date('{{ date }}').getTime() + delta * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+            const granularity = '{{ granularity }}';
+            window.location.href = `/?granularity=${granularity}&date=${date}`;
         }
 
     </script>

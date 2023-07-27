@@ -71,7 +71,6 @@ def index():
     default_date = '2023-07-24'
     date = request.args.get('date')
 
-    # Check if this is a POST request
     if request.method == 'POST':
         api_key = request.form.get('api_key')
         if api_key:
@@ -86,7 +85,8 @@ def index():
         # Check for the API key in the session
         api_key = session.get('api_key', os.environ.get('OPENAI_API_KEY'))  # Default API key for GET requests
         use_own_key = 'api_key' in session
-        date = default_date
+        if date is None:
+            date = default_date
 
     granularity = request.args.get('granularity', '60')  # Get granularity from query parameters, default is '60'
 
