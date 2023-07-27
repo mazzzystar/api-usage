@@ -1,9 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Error</title>
+    <title>Privacy Policy of OpenAI Cost Tracker</title>
     <link rel="icon" href="static/favicon.png" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
 
@@ -21,20 +19,14 @@
         body {
             font-family: Arial, sans-serif;
             line-height: 1.6;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f8f8f8;
-            color: #333;
         }
-        .error-container {
-            text-align: center;
-            max-width: 500px;
+        .content {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
         }
         h1 {
-            font-size: 2em;
+            color: #333;
         }
         p {
             color: #666;
@@ -49,10 +41,12 @@
     </style>
 </head>
 <body>
-    <div class="error-container">
-        <h1>An Error Occurred</h1>
-        <p>Sorry, an error occurred while processing your request.</p>
-        <p>Please <a href="/">click here</a> to return to the main page and try again.</p>
+    <div class="content">
+        <h1>Privacy Policy</h1>
+        <p>We are committed to protecting your privacy. When you input your API key, it's only used locally in your browser and never sent to or stored on any server.</p>
+        <p>Your usage data is fetched from the OpenAI API, and it's used only to display the charts in your browser. It's not stored or shared in any way.</p>
+        <p>Remember, the key stays in your local storage until you manually clear it or use the browser's private/incognito mode.</p>
+        <a href="/">Back to main page</a>
     </div>
 </body>
 </html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>About OpenAI Cost Tracker</title>
+    <link rel="icon" href="static/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZX116QZGF6"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-ZX116QZGF6');
+    </script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+        }
+        .content {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        p, ol {
+            color: #666;
+        }
+        a {
+            color: #0099cc;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <h1>About This Site</h1>
+        <p>This open-sourced website tool is made by <a href="https://github.com/mazzzystar">Ke Fang</a> to track and analyze your daily usage and cost of the OpenAI API.</p>
+        <h2>How to use</h2>
+        <ol>
+            <li>Enter your OpenAI API key into the input field.</li>
+            <li>Set the key and view your API usage statistics.</li>
+            <li>You can switch between a bar chart and a pie chart using the toggle above the chart.</li>
+            <li>You can select the time granularity and navigate between different days using the controls above the chart.</li>
+        </ol>
+        <a href="/">Back to main page</a>
+    </div>
+</body>
+</html>

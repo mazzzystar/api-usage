@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>OpenAI API Usage & Cost</title>
+    <title>OpenAI Cost Tracker</title>
     <link rel="icon" href="static/favicon.png" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
     <script defer src="/_vercel/insights/script.js"></script>
+    <meta name="description" content="Open-sourced website tool designed to track and analyze your daily usage and cost of the OpenAI API. You can view the API costs for different models, the consumption segmented by time, as well as pie chart proportions. All you need to do is input your API Key. It's safe and will not disclose your privacy.">
 
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZX116QZGF6"></script>
@@ -154,6 +155,38 @@
         .slider.round:before {
             border-radius: 50%;
         }
+        .footer-menu {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            text-align: center; /* Centering the menu items */
+        }
+
+        .footer-menu li {
+            display: inline; /* Making the menu items line up horizontally */
+            padding: 0 10px; /* Adding some space between the items */
+            border-right: 1px solid #333; /* Adding a right border to act as a divider */
+        }
+
+        .footer-menu li:last-child {
+            border-right: none; /* Removing the right border from the last item */
+        }
+
+        .footer-menu a {
+            text-decoration: none; /* Removing the underline from the links */
+            color: inherit; /* Making the link text the same color as the rest of the text */
+        }
+
+        .footer-text {
+            text-align: center; /* Centering the copyright notice */
+        }
+
+        footer {
+            background-color: #f8f9fa; /* Setting a light grey background for the footer */
+            padding: 20px 0; /* Adding some vertical padding */
+        }
+
     </style>
 </head>
 <body>
@@ -396,6 +429,16 @@
 
     </script>
 
+    <footer>
+        <nav>
+            <ul class="footer-menu">
+                <li><a href="{{ url_for('about') }}">About</a></li>
+                <li><a href="{{ url_for('privacy') }}">Privacy</a></li>
+                <li><a href="https://github.com/mazzzystar/api-usage">Github</a></li>
+            </ul>
+        </nav>
+        <p class="footer-text">© 2023 OpenAI Cost Tracker. All rights reserved.</p>
+    </footer>
 
 
 </body>
