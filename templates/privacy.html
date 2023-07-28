@@ -1,8 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Privacy Policy of OpenAI API Token Usage Cost Tracker</title>
+    <meta charset="UTF-8">
+    <title>About OpenAI API Token Usage Cost Tracker</title>
     <link rel="icon" href="static/favicon.png" type="image/x-icon">
+    <meta name="description" content="Our privacy policy emphasizes our commitment to your privacy. Learn about how your API key and usage data are handled in our tool.">
+    <meta name="keywords" content="OpenAI, API, Privacy, Policy, User Privacy, Local Storage, API Key">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZX116QZGF6"></script>
@@ -18,6 +23,7 @@
         body {
             font-family: Arial, sans-serif;
             line-height: 1.6;
+            font-size: 18px; /* Increase the font size */
         }
         .content {
             width: 80%;
@@ -37,6 +43,17 @@
         a:hover {
             text-decoration: underline;
         }
+        .back-button {
+            display: inline-block;
+            background-color: black;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .back-button:hover {
+            background-color: #333;
+        }
     </style>
 </head>
 <body>
@@ -45,7 +62,7 @@
         <p>We are committed to protecting your privacy. When you input your API key, it's only used locally in your browser and never sent to or stored on any server.</p>
         <p>Your usage data is fetched from the OpenAI API, and it's used only to display the charts in your browser. It's not stored or shared in any way.</p>
         <p>Remember, the key stays in your local storage until you manually clear it or use the browser's private/incognito mode.</p>
-        <a href="/">Back to main page</a>
+        <a href="/" class="back-button">Back to main page</a>
     </div>
 </body>
 </html>

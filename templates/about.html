@@ -3,6 +3,11 @@
 <head>
     <title>About OpenAI API Token Usage Cost Tracker</title>
     <link rel="icon" href="static/favicon.png" type="image/x-icon">
+    <meta name="description" content="The open-source tool that lets you track and analyze your OpenAI API usage and costs.">
+    <meta name="keywords" content="OpenAI, API, Usage, Cost, Tracker, Statistics, Analytics, Open Source, Ke Fang">
+
+    <!-- Add this viewport meta tag -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZX116QZGF6"></script>
@@ -18,6 +23,7 @@
         body {
             font-family: Arial, sans-serif;
             line-height: 1.6;
+            font-size: 18px; /* Increase the font size */
         }
         .content {
             width: 80%;
@@ -37,6 +43,17 @@
         a:hover {
             text-decoration: underline;
         }
+        .back-button {
+            display: inline-block;
+            background-color: black;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .back-button:hover {
+            background-color: #333;
+        }
     </style>
 </head>
 <body>
@@ -50,7 +67,7 @@
             <li>You can switch between a bar chart and a pie chart using the toggle above the chart.</li>
             <li>You can select the time granularity and navigate between different days using the controls above the chart.</li>
         </ol>
-        <a href="/">Back to main page</a>
+        <a href="/" class="back-button">Back to main page</a>
     </div>
 </body>
 </html>
