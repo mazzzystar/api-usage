@@ -1,8 +1,8 @@
 # api-usage
 Track your OpenAI API usage with [apiusage.info](https://apiusage.info/) to effortlessly view the costs consumed by different models.
 
-![my-usage](static/usage.jpg)
-![my-usage](static/usage-pie.jpg)
+![my-usage](static/usage.webp)
+![my-usage](static/usage-pie.webp)
 
 # Introduction
 Enter your OpenAI API Key to view the costs consumed by various model APIs over the past day. It shows the usage of all the cost-incurring models from the previous day on an hourly basis. You can switch to a pie chart to see the cost proportion of each model.

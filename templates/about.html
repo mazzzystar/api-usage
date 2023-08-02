@@ -1,15 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>About OpenAI API Cost Tracker</title>
+    <title>About OpenAI API Cost</title>
     <link rel="icon" href="static/favicon.png" type="image/x-icon">
     <meta name="description" content="Track and analyze your daily usage and cost of the OpenAI API. Understand the costs for different models, including ChatGPT, GPT-4, Whisper, and text-embedding models. Display the information by time or using a pie chart. This tool is open-source and will not leak your API key.">
     <meta name="keywords" content="OpenAI, API, Usage, Cost, Tracker, Statistics, Analytics, Open Source, Ke Fang">
-
-    <!-- Add this viewport meta tag -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZX116QZGF6"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -18,19 +14,18 @@
 
       gtag('config', 'G-ZX116QZGF6');
     </script>
-
     <style>
         body {
             font-family: Arial, sans-serif;
             line-height: 1.6;
-            font-size: 18px; /* Increase the font size */
+            font-size: 18px;
         }
         .content {
             width: 80%;
             margin: 0 auto;
             padding: 20px;
         }
-        h1, h2 {
+        h1, h2, h3 {
             color: #333;
         }
         p, ol {
@@ -58,15 +53,40 @@
 </head>
 <body>
     <div class="content">
-        <h1>About This Site</h1>
-        <p>This open-sourced website tool is made by <a href="https://github.com/mazzzystar">Ke Fang</a> to track and analyze your daily usage and cost of the OpenAI API.</p>
-        <h2>How to use</h2>
+        <h1>About OpenAI API Cost Tracker</h1>
+        <p>This tool is an <a href="https://github.com/mazzzystar/api-usage">open-source</a> project designed by <a href="https://github.com/mazzzystar">Ke Fang</a> to track your daily OpenAI API usage and expenses. It provides an overview of how various OpenAI models, such as ChatGPT, GPT-4, Whisper, and text-embedding models, are contributing to the overall cost.</p>
+
+        <h2>Features</h2>
+        <ol>
+            <li><strong>Hourly Breakdown:</strong> Shows the usage of all cost-incurring models from the previous day on an hourly basis. This granular detail allows you to pinpoint unusual spikes in usage.
+                <div style="text-align: center;">
+                    <img src="static/usage.webp" alt="OpenAI API cost bar chart" style="width: 80%; margin-top: 20px;">
+                    <p style="color: gray;">Bar chart showing hourly breakdown of OpenAI API usage.</p>
+                </div>
+            </li>
+            <li><strong>Visual Representation:</strong> Choose between a bar chart or a pie chart to visualize the data. The bar chart provides a time-wise breakdown, while the pie chart offers a proportional view of the costs.
+                <div style="text-align: center;">
+                    <img src="static/usage-pie.webp" alt="OpenAI API cost pie chart" style="width: 80%; margin-top: 20px;">
+                    <p style="color: gray;">Pie chart showing the cost proportion of each OpenAI model.</p>
+                </div>
+            </li>
+            <li><strong>Privacy and Security:</strong> The API Key is stored locally in localStorage. Since the tool is open-sourced and free, you can trust that your information remains secure.</li>
+        </ol>
+
+        <h2>How to Use</h2>
         <ol>
             <li>Enter your OpenAI API key into the input field.</li>
             <li>Set the key and view your API usage statistics.</li>
             <li>You can switch between a bar chart and a pie chart using the toggle above the chart.</li>
             <li>You can select the time granularity and navigate between different days using the controls above the chart.</li>
         </ol>
+
+        <h2>The Inspiration Behind the Tool</h2>
+        <p>Designed out of personal need, this tool was created by Ke Fang to assist other developers and AI enthusiasts who found it challenging to track the expenses of various OpenAI models. The daily bill from OpenAI did not display the respective proportions of different models, leading to confusion. This tool simplifies that process, providing a clear view of what's consuming resources, enabling better budgeting and understanding of the OpenAI API usage.</p>
+
+        <h3>Contribute</h3>
+        <p>Being an open-source project, contributions are welcome! You can view the source code on <a href="https://github.com/mazzzystar/api-usage">GitHub</a> and make a pull request or open an issue if you have any suggestions or find any bugs.</p>
+
         <a href="/" class="back-button">Back to main page</a>
     </div>
 </body>
