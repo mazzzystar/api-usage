@@ -5,10 +5,8 @@
     <title>OpenAI API Cost</title>
     <link rel="icon" href="static/favicon.png" type="image/x-icon">
 
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -193,14 +191,18 @@
             padding: 20px 0; /* Adding some vertical padding */
         }
 
+        .header-item {
+            margin-right: 20px; /* You can adjust this value to add more or less space */
+        }
+
     </style>
 </head>
 <body>
     <div class="header">
-        <a href="https://github.com/mazzzystar/api-usage" target="_blank" style="color: inherit; text-decoration: none;">
-            <i class="fab fa-github" style="font-size:36px; margin-right:10px;"></i>
+        <a href="https://github.com/mazzzystar/api-usage" target="_blank" class="text-white header-item">
+            <img src="static/github.svg" alt="Github" style="width: 28px; height: 28px;" />
         </a>
-        <form id="api-key-form" method="post" style="flex-grow: 1;">
+        <form id="api-key-form" method="post" style="flex-grow: 1;" class="header-item">
             <label for="apiKey">Enter your API key:</label>
             <input type="text" id="apiKey" name="apiKey">
             <input type="hidden" id="hidden-api-key" name="api_key">
