@@ -413,7 +413,6 @@
         // When page loads, check localStorage for validKey flag
         window.onload = function() {
             if (localStorage.getItem('validKey') === 'true') {
-                document.getElementById('api-title').innerHTML = "My OpenAI Cost (${{ '%.2f'|format(total_cost) }})";
 
                 // Fetch the stored API key
                 var apiKey = localStorage.getItem('apiKey');
@@ -425,12 +424,28 @@
                 document.getElementById('hidden-api-key').value = apiKey;
 
                 // Send a request to your server with the stored API key
+                var formData = new FormData();
+                formData.append("api_key", apiKey);
+
                 fetch('/', {
                     method: 'POST',
+                    body: formData,
                     headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ api_key: apiKey })
+                        'X-Requested-With': 'XMLHttpRequest'  // To indicate this is an AJAX request
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Update your website content based on the fetched data
+                    if (data && data.total_cost !== undefined) {
+                        document.getElementById('api-title').innerHTML = "My OpenAI Cost ($" + parseFloat(data.total_cost).toFixed(2) + ")";
+                    } else {
+                        // Handle case where data might not be as expected
+                        console.error('Unexpected data format:', data);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
                 });
             }
         }

@@ -5,6 +5,7 @@ from flask import Flask, render_template, request, session
 import requests
 import datetime
 import json
+from flask import jsonify
 from collections import defaultdict
 
 app = Flask(__name__)
@@ -33,6 +34,7 @@ def get_usage(api_key, date, use_own_key=False):
     headers = {'Authorization': f'Bearer {api_key}'}
     params = {'date': date}
 
+    print(f"use_own_key: {use_own_key}")
     if use_own_key:
         try:
             response = requests.get(url, headers=headers, params=params)
@@ -73,6 +75,7 @@ def index():
 
     if request.method == 'POST':
         api_key = request.form.get('api_key')
+        print(f"api key: {api_key}")
         if api_key:
             # Save the key in the session
             session['api_key'] = api_key
@@ -156,6 +159,9 @@ def index():
                 datasets.append({'label': f'{model} (generated)', 'data': generated_costs, 'stack': 'Stack 0'})
             else:
                 datasets.append({'label': f'{model} (total)', 'data': total_costs, 'stack': 'Stack 0'})
+
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return jsonify({"total_cost": total_cost})
 
     return render_template('index.html', timestamps=json.dumps(timestamps), datasets=json.dumps(datasets),
                            model_total_costs=json.dumps(dict(model_total_costs)), granularity=granularity, date=date,
