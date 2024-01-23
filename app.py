@@ -70,6 +70,12 @@ def to_utc(date):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    from_error = request.args.get('from_error', 'false') == 'true'
+
+    if from_error and 'api_key' in session:
+        # Remove the API key from the session
+        session.pop('api_key', None)
+        
     default_date = '2023-07-24'
     date = request.args.get('date')
 
